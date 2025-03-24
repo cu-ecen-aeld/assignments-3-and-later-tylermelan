@@ -18,6 +18,6 @@ void test_validate_my_username()
      * TODO: Replace the line below with your code here as described above to verify your /conf/username.txt
      * config file and my_username() functions are setup properly
      */
-    int usernames_match = strcmp(my_username(), malloc_username_from_conf_file()) == 0;
+    bool usernames_match = strcmp(my_username(), malloc_username_from_conf_file()) == 0;
     TEST_ASSERT_TRUE_MESSAGE(usernames_match, "usernames should be equal");
 }
