@@ -16,3 +16,9 @@ writefiledir=$(dirname "$writefile")
 mkdir -p "$writefiledir"
 
 echo "$writestr" > "$writefile"
+
+if [ ! $? -eq 0 ]
+then
+  echo "The file could not be created or written to."
+  exit 1
+fi
