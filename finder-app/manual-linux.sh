@@ -5,7 +5,7 @@
 set -e
 set -u
 
-OUTDIR=/tmp/aeld
+OUTDIR=${1:-/tmp/aeld}
 KERNEL_REPO=git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 KERNEL_VERSION=v5.15.163
 BUSYBOX_VERSION=1_33_1
@@ -22,6 +22,12 @@ else
 fi
 
 mkdir -p ${OUTDIR}
+
+if [ $? -ne 0 ]
+then
+    echo "Failed to create directory ${OUTDIR}"
+    exit 1
+fi
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/linux-stable" ]; then
