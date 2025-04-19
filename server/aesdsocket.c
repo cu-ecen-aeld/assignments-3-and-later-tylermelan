@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <sys/sendfile.h>
 #include <signal.h>
+#include <string.h>
 
 #define BUF_SIZE 1024
 #define FILE_PATH "/var/tmp/aesdsocketdata"
@@ -66,6 +67,14 @@ static int listen_on_socket()
   if (sockfd == -1)
   {
     perror("socket error");
+    return -1;
+  }
+
+  int opt = 1;
+  status = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+  if (status != 0)
+  {
+    perror("setsockopt error");
     return -1;
   }
 
@@ -189,7 +198,7 @@ static int send_updated_file(int acceptfd)
   return remaining > 0 ? -1 : 0;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
   int status;
   openlog(NULL, 0, LOG_USER);
@@ -204,6 +213,22 @@ int main()
   if (sockfd == -1)
   {
     return -1;
+  }
+
+  if (argc > 1 && strcmp(argv[1], "-d") == 0)
+  {
+    pid_t pid = fork();
+    if (pid < 0)
+    {
+      perror("fork");
+      return -1;
+    }
+
+    if (pid != 0)
+    {
+      close(sockfd);
+      return 0;
+    }
   }
 
   while (!should_exit)
@@ -230,13 +255,7 @@ int main()
   }
 
   close(sockfd);
-
-  status = remove(FILE_PATH);
-  if (status != 0)
-  {
-    perror("remove");
-    return -1;
-  }
+  remove(FILE_PATH);
 
   return 0;
 }
