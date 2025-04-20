@@ -229,6 +229,9 @@ int main(int argc, char *argv[])
       close(sockfd);
       return 0;
     }
+
+    setsid();
+    chdir("/");
   }
 
   while (!should_exit)
