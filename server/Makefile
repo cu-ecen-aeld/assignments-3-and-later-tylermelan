@@ -1,7 +1,10 @@
 all: aesdsocket
 
-aesdsocket: aesdsocket.c
-	$(CC) -o aesdsocket aesdsocket.c -Wall -Werror
+aesdsocket.o: aesdsocket.c
+	$(CC) $(CCFLAGS) -c aesdsocket.c
+
+aesdsocket: aesdsocket.o
+	$(CC) $(LDFLAGS) aesdsocket.o -o aesdsocket
 
 clean:
 	rm -f aesdsocket
